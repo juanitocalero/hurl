@@ -17,6 +17,7 @@
  */
 use std::time::Duration;
 
+use crate::http::HttpVersion;
 use hurl_core::ast::{Entry, Retry};
 
 use crate::util::path::ContextDir;
@@ -32,6 +33,7 @@ pub struct RunnerOptionsBuilder {
     cookie_input_file: Option<String>,
     fail_fast: bool,
     follow_location: bool,
+    http_version: Option<HttpVersion>,
     ignore_asserts: bool,
     insecure: bool,
     max_redirect: Option<usize>,
@@ -63,6 +65,7 @@ impl Default for RunnerOptionsBuilder {
             cookie_input_file: None,
             fail_fast: true,
             follow_location: false,
+            http_version: None,
             ignore_asserts: false,
             insecure: false,
             max_redirect: Some(50),
@@ -160,6 +163,11 @@ impl RunnerOptionsBuilder {
     /// To limit the amount of redirects to follow use [`self.max_redirect()`]
     pub fn follow_location(&mut self, follow_location: bool) -> &mut Self {
         self.follow_location = follow_location;
+        self
+    }
+
+    pub fn http_version(&mut self, version: Option<HttpVersion>) -> &mut Self {
+        self.http_version = version;
         self
     }
 
@@ -283,6 +291,7 @@ impl RunnerOptionsBuilder {
             cookie_input_file: self.cookie_input_file.clone(),
             fail_fast: self.fail_fast,
             follow_location: self.follow_location,
+            http_version: self.http_version,
             ignore_asserts: self.ignore_asserts,
             insecure: self.insecure,
             max_redirect: self.max_redirect,
@@ -315,6 +324,7 @@ pub struct RunnerOptions {
     pub(crate) cookie_input_file: Option<String>,
     pub(crate) fail_fast: bool,
     pub(crate) follow_location: bool,
+    pub(crate) http_version: Option<HttpVersion>,
     pub(crate) ignore_asserts: bool,
     pub(crate) insecure: bool,
     pub(crate) max_redirect: Option<usize>,
